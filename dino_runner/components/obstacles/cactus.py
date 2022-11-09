@@ -9,3 +9,8 @@ class Cactus(Obstacle):
         super().__init__(image, self.type)
         self.rect.y = 325
 
+    
+    
+
+
+
