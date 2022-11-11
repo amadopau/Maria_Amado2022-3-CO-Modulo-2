@@ -3,7 +3,7 @@ import pygame
 from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_STYLE, GAME_OVER, RESET, HEART
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager 
-
+from dino_runner.components.message import draw_message
 
 
 class Game:
@@ -29,14 +29,11 @@ class Game:
             if not self.playing:
                 self.show_menu()
         pygame.display.quit()
-        pygame.quite()
+        pygame.quit()
 
     def run(self):
         # Game loop: events - update - draw
-        self.obstacle_manager.reset_obstacles()
-        self.score = 0
-        self.game_speed = 20
-        self.playing = True
+        self.reset()
         while self.playing:
             self.events()
             self.update()
@@ -70,27 +67,14 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:
-            font = pygame.font.Font(FONT_STYLE, 30)
-            text = font.render("Press any key to start...", True, (198, 54, 54))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_height+270, half_screen_width-300)
-            self.screen.blit(text, text_rect)
+            draw_message('Press any key to restart...', self.screen)
         else:
+            draw_message('Press any key to restart', self.screen)
+            draw_message(f'your score: {self.score}', self.screen, pos_y_center = half_screen_width +50)
+            draw_message(f'Death count: {self.death_count}', self.screen, pos_x_center = half_screen_height +100)
             self.screen.blit(GAME_OVER, (half_screen_height+80, half_screen_width-480))
             self.screen.blit(RESET, (half_screen_height+230, half_screen_width-420))
-            self.screen.blit(HEART, (half_screen_height+200, half_screen_width-200))
-
-            font = pygame.font.Font(FONT_STYLE, 30)
-            text = font.render("Press any key to start again", True, (198, 54, 54))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_height+270, half_screen_width-300)
-            self.screen.blit(text, text_rect)
-
-            font = pygame.font.Font(FONT_STYLE, 30)
-            text = font.render(f'your score: {self.score}', True, (0, 0, 0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_height+270, half_screen_width-250)
-            self.screen.blit(text, text_rect)
+            self.screen.blit(HEART, (half_screen_height+190, half_screen_width-200))
             
         pygame.display.update()
         self.handle_event_on_menu()
@@ -110,6 +94,11 @@ class Game:
         text_rect.center = (1000, 50)
         self.screen.blit(text, text_rect)
 
+    def reset(self):
+        self.obstacle_manager.reset_obstacles()
+        self.score = 0
+        self.game_speed = 20
+        self.playing = True
     
 
     def update_score(self):
