@@ -20,6 +20,9 @@ class Dinosaur(Sprite):
     self.jump_speed = self.JUMP_SPEED
     self.dino_jump = False
     self.dino_duck = False
+    self.has_power_up = False
+    self.power_time_out = 0
+    self.clock = 3
 
   def update(self, user_input):
     if self.dino_run:
